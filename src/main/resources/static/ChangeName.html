@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="img/job/RNG.png">
+    <link rel="shortcut icon" href="img/job/DNC.png">
+    <title>更变角色名字</title>
+
+    <!-- Vue -->
+    <script src="js/vue.js"></script>
+    <!-- axios -->
+    <script src="js/axios.min.js"></script>
+    <!-- 引入样式 -->
+    <!--<script src="js/element-ui.js"></script>-->
+    <!-- 引入组件库 -->
+    <script src="js/element-ui-zujian.js"></script>
+
+
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<!-- <h1 style="text-align: center;color: brown">
+     <marquee behavior="" direction="">通知:更变角色需要扣除玩家游戏币50w一次,请各位悉知~</marquee>
+ </h1>-->
+<div id="app">
+    <h1 style="text-align: center">更换角色名字(Bata 可用)</h1>
+    <div style="width:50%;margin: 0 auto;">
+
+        <el-form label-width="100px" class="demo-ruleForm">
+            <el-form-item label="原角色名" prop="oldname">
+                <el-input type="name" v-model="form.oldname" autocomplete="off" placeholder="请输入您的角色名字,英文名字,出现汉字,导致你自己上线失败,我拒绝免费处理"></el-input>
+            </el-form-item>
+            <el-form-item label="新角色名" prop="newname">
+                <el-input type="name" v-model="form.newname" autocomplete="off" placeholder="请输入您的角色名字"></el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button type="primary" @click="submitForm()">确认更换角色姓名</el-button>
+                <el-button @click="resetForm()">重置</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+
+
+</body>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            form: {
+                race: undefined,
+                oldname: '',
+                newname: '',
+                pass: '',
+                checkPass: '',
+                face: 1,
+                checkPass: undefined,
+            },
+            tableData: [],  //展示的数据
+            currentPage: 1,//默认显示第一页
+            pageSize: 12,//默认每页显示10条
+            totalNum: 0,//总页数
+            showtotal: [6, 12, 24, 30, 50]  //每页显示的条数
+        },
+        methods: {
+            submitForm() {
+                var self = this;
+                axios({
+                    url: '/player/changeName',
+                    method: 'get',
+                    params: {
+                        oldName: self.form.oldname,
+                        newName: self.form.newname
+                    }
+                }).then(function (res){
+                    //self.open1(res.data.msg)
+                    //self.open1(res.data.data.msg)
+                    if(res.data.flag){
+                        self.open1(res.data.msg)
+                    }else {
+                        self.open2(res.data.msg)
+                    }
+                })
+            },
+            resetForm() {
+                this.form.oldname = '';
+                this.form.newname = '';
+            },
+            open1(Message) {
+                this.$notify({
+                    title: '成功',
+                    message: Message,
+                    type: 'success'
+                });
+            },
+
+            open2(Message) {
+                this.$notify({
+                    title: '警告',
+                    message: Message,
+                    type: 'warning'
+                });
+            },
+
+            open3(Message) {
+                this.$notify.info({
+                    title: '消息',
+                    message: Message
+                });
+            },
+
+            open4() {
+                this.$notify.error({
+                    title: '错误',
+                    message: '这是一条错误的提示消息'
+                });
+            },
+            /*Search() {
+                console.log(this);
+                var self = this;
+                axios({
+                    url: '/player/getOnline',
+                    method: 'get',
+                    params: {charname: self.form.name, Race: self.form.region},
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).then(function (res) {
+                    self.tableData = res.data.data;
+                    self.totalNum = res.data.total;
+                    self.open1(res.data.msg)
+                }).catch(function (error) {
+                    console.log(error);
+                })
+            }*/
+        },
+        mounted: function () {
+            this.Search();
+        }
+    })
+</script>
+<script>
+    export default {
+        data() {
+            var checkAge = (rule, value, callback) => {
+                if (!value) {
+                    return callback(new Error('年龄不能为空'));
+                }
+                setTimeout(() => {
+                    if (!Number.isInteger(value)) {
+                        callback(new Error('请输入数字值'));
+                    } else {
+                        if (value < 18) {
+                            callback(new Error('必须年满18岁'));
+                        } else {
+                            callback();
+                        }
+                    }
+                }, 1000);
+            };
+            var validatePass = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入密码'));
+                } else {
+                    if (this.ruleForm.checkPass !== '') {
+                        this.$refs.ruleForm.validateField('checkPass');
+                    }
+                    callback();
+                }
+            };
+            var validatePass2 = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请再次输入密码'));
+                } else if (value !== this.ruleForm.pass) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                    callback();
+                }
+            };
+            return {
+                ruleForm: {
+                    pass: '',
+                    checkPass: '',
+                    age: ''
+                },
+                rules: {
+                    pass: [
+                        {validator: validatePass, trigger: 'blur'}
+                    ],
+                    checkPass: [
+                        {validator: validatePass2, trigger: 'blur'}
+                    ],
+                    age: [
+                        {validator: checkAge, trigger: 'blur'}
+                    ]
+                }
+            };
+        },
+        methods: {
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        alert('submit!');
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields();
+            }
+        }
+    }
+</script>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haste.Mapper.PlayerMapper">
+
+    <!--
+        <resultMap id="BaseResultMap" type="com.haste.Pojo.OnlinePlayerInfo">
+            <id column="quote_id" jdbcType="INTEGER" property="quoId" />
+            <result column="rfq_id" jdbcType="INTEGER" property="rfqId" />
+            <result column="user_id" jdbcType="INTEGER" property="userId" />
+            <result column="quote_file" jdbcType="VARCHAR" property="quoteFile" />
+
+            <result column="rfq_name" jdbcType="VARCHAR" property="rfqName" />
+            <result column="quote_status" jdbcType="INTEGER" property="Status" />
+            <result column="quote_time" jdbcType="INTEGER" property="quoteTime" />
+        </resultMap>
+
+        -->
+
+    <sql id="ok">
+		quote_id, rfq_id, user_id,quote_file,quote_status,quote_time
+	</sql>
+
+    <!--<select id="getInfo" resultType="com.haste.Pojo.OnlinePlayerInfo">
+        SELECT charid, partyid, charname, pos_zone, pos_prevzone, nation, rank_sandoria, rank_bastok, rank_windurst, race, nameflags, mjob, sjob, mlvl, slvl
+        FROM accounts_sessions
+        LEFT JOIN accounts_parties USING (charid)
+        LEFT JOIN chars USING (charid)
+        LEFT JOIN char_look USING (charid)
+        LEFT JOIN char_stats USING (charid)
+        LEFT JOIN char_profile USING(charid)
+        WHERE charname IS NOT NULL
+    </select>-->
+
+    <select id="getInfo" resultType="com.haste.Pojo.OnlinePlayerInfo">
+	SELECT charid, partyid, charname, `name` as pos_zone, pos_prevzone, nation, rank_sandoria, rank_bastok, rank_windurst, race, nameflags, mjob, sjob, mlvl, slvl
+        FROM accounts_sessions
+        LEFT JOIN accounts_parties USING (charid)
+        LEFT JOIN chars USING (charid)
+        LEFT JOIN char_look USING (charid)
+        LEFT JOIN char_stats USING (charid)
+        LEFT JOIN char_profile USING(charid)
+        LEFT JOIN zone_settings on pos_zone = zoneid
+        WHERE charname IS NOT NULL
+
+	</select>
+
+    <select id="Count" resultType="Integer">
+		SELECT count(*)
+        FROM accounts_sessions
+        LEFT JOIN accounts_parties USING (charid)
+        LEFT JOIN chars USING (charid)
+        LEFT JOIN char_look USING (charid)
+        LEFT JOIN char_stats USING (charid)
+        LEFT JOIN char_profile USING(charid)
+        WHERE charname IS NOT NULL
+	</select>
+
+    <update id="ChangeCharRace">
+        update
+            char_look t1,(select charid from chars where charname = #{charname}) t2
+        set
+            race = #{race}
+            <if test="face != null">
+                ,face = #{face}
+            </if>
+        where
+            t1.charid = t2.charid
+    </update>
+    <update id="changeName">
+        UPDATE chars set charname = #{newName} where charname = #{oldName}
+    </update>
+
+    <select id="CountChars" resultType="Integer">
+		SELECT count(*)
+        FROM chars
+	</select>
+</mapper>

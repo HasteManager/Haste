@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在线玩家</title>
+    <link rel="shortcut icon" href="img/job/DNC.png">
+    <style>
+
+        .el-table .el-table_1_column_1 > div {
+            color: deeppink;
+        }
+
+        .el-table .is-leaf > div {
+            color: black;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .el-table .cell {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+            word-break: break-all;
+            line-height: 30px;
+            padding-right: 10px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+    <!-- Vue -->
+    <script src="js/vue.js"></script>
+    <!-- axios -->
+    <script src="js/axios.min.js"></script>
+    <!-- 引入样式 -->
+    <!--<script src="js/element-ui.js"></script>-->
+    <!-- 引入组件库 -->
+    <script src="js/element-ui-zujian.js"></script>
+
+
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+
+</head>
+<body>
+<h1 style="text-align: center;color: brown"> Haste服务器-Online名单</h1>
+
+<div id="app">
+    <h3 style="text-align: center;color: brown"> (从2020年5月20日晚~现在)总注册玩家数:{{totalChars}}</h3>
+    <marquee behavior="scroll" direction="" scrollamount="10" >本网页20秒自动刷新,不使用时,及时关闭,谢谢!🤝</marquee>
+    <template>
+        <el-table
+                :data="tableData"
+                stripe
+                style="width: 100%">
+
+            <el-table-column
+                    prop="charname"
+                    label="角色名字"
+                    width="">
+            </el-table-column>
+            <el-table-column
+                    prop="pos_zone"
+                    label="所在地区"
+                    width="">
+            </el-table-column>
+            <el-table-column
+                    label="主职/副职"
+                    width="">
+                <template slot-scope="scope">
+                   <!-- <span>{{scope.row.mjob}}/{{scope.row.sjob}} 👉 {{scope.row.mlvl}}/{{scope.row.slvl}}</span>-->
+                    <img :src="'img/job/'+scope.row.mjob+'.png'">{{scope.row.mlvl}}：<img :src="'img/job/'+scope.row.sjob+'.png'">{{scope.row.slvl}}
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="race"
+                    label="种族"
+                    width="75px">
+            </el-table-column>
+            <el-table-column
+                    label="国家"
+                    width="120px">
+                <template slot-scope="scope" style="display: flex; justify-content: center ; align-items: center ">
+                    <img v-if="scope.row.nation == 'Sand‘Oria'" src="img/45px-San_d'Oria_Flag.jpg">
+                    <img v-if="scope.row.nation == 'Bastok'" src="img/45px-Bastok-Flag.jpg">
+                    <img v-if="scope.row.nation == 'Windurst'" src="img/45px-Windurst-Flag.jpg">
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="队伍号"
+                    width="200px">
+                <template slot-scope="scope">
+                    <span v-if="scope.row.partyid != '未组队'"> <span
+                            style="color: forestgreen"><b>{{scope.row.partyid}}</b></span> </span>
+                    <span v-if="scope.row.partyid == '未组队'" style="width: 120px">
+                         <marquee behavior="scroll" direction="" scrollamount="7" ><span style="color: red">尚未组队!</span></marquee>
+                    </span>
+                </template>
+            </el-table-column>
+
+
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            @click="handleEdit(scope.$index, scope.row)">编辑
+                    </el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="handleDelete(scope.$index, scope.row)">删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </template>
+
+    <!--分页条-->
+    <div class="Pagination" style="text-align: center">
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="showtotal"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="totalNum">
+        </el-pagination>
+    </div>
+
+</div>
+<a id="ibangkf" href="http://www.ibangkf.com">在线客服系统</a>
+<script>
+    (function () {
+        var st = document.createElement("script");
+        st.src = "https://c.ibangkf.com/i/c-zlk999.js";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(st, s);
+    })();
+</script>
+
+
+</body>
+<script>
+    var vueobj = new Vue({
+        el: "#app",
+        data() {
+            return {
+                tableData: [],  //展示的数据
+                currentPage: 1,//默认显示第一页
+                pageSize: 10,//默认每页显示10条
+                totalNum: 0,//总页数
+                showtotal: [5, 10, 15, 20, 50],  //每页显示的条数
+                totalChars: 0,
+                dingshiqi: undefined    //定时器 必须声明，不然 你调用this.XX的时候,会显示XX is undefined
+            }
+        },
+        methods: {
+            handleSizeChange(val) {
+                this.pageSize = val;    //动态改变
+                this.Search()
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;    //动态改变
+                this.Search()
+            },
+            //编辑按钮
+            handleEdit(A, B) {
+                this.open2("暂时未开发");
+            },
+            //删除按钮
+            handleDelete(A, B) {
+                this.open2("不要瞎按");
+            },
+            open1(Message) {
+                this.$notify({
+                    title: '成功',
+                    message: Message,
+                    type: 'success'
+                });
+            },
+
+            open2(Message) {
+                this.$notify({
+                    title: '警告',
+                    message: Message,
+                    type: 'warning'
+                });
+            },
+
+            open3(Message) {
+                this.$notify.info({
+                    title: '消息',
+                    message: Message
+                });
+            },
+
+            open4() {
+                this.$notify.error({
+                    title: '错误',
+                    message: '这是一条错误的提示消息'
+                });
+            },
+            Search() {
+                var self = this;
+                axios({
+                    url: '/player/getOnline',
+                    method: 'get',
+                    params: {pageNum: self.currentPage, pageSize: self.pageSize},
+                    headers: {
+                        /*'Content-Type': 'application/x-www-form-urlencoded'*/
+                        'Content-Type': 'application/json'
+                    },
+                }).then(function (res) {
+                    self.tableData = res.data.data;
+                    self.totalNum = res.data.total;
+                }).catch(function (error) {
+                    console.log(error);
+                })
+            }, CountChar() {
+                var self = this;
+                axios({
+                    url: '/player/CountChars',
+                    method: 'get',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                }).then(function (res) {
+                    self.totalChars = res.data;
+                }).catch(function (error) {
+                    console.log(error);
+                })
+            }
+        },
+        mounted: function () {
+            var _self = this;
+            this.Search();
+            this.CountChar();
+            /* 定时器 */
+            this.dingshiqi = setInterval(function () {
+                //执行内容
+                vueobj.Search();
+            }, 20000);
+        },
+        //销毁前清除定时器
+        beforeDestroy() {
+            clearInterval(this.timer);
+        }
+    })
+
+</script>
+</html>

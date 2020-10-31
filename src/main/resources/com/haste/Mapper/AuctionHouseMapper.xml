@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.haste.Mapper.AuctionHouseMapper">
+  <resultMap id="BaseResultMap" type="com.haste.Pojo.AuctionHouse">
+    <!--@mbg.generated-->
+    <!--@Table tpzdb.auction_house-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="itemid" jdbcType="SMALLINT" property="itemid" />
+    <result column="stack" jdbcType="BOOLEAN" property="stack" />
+    <result column="seller" jdbcType="INTEGER" property="seller" />
+    <result column="seller_name" jdbcType="VARCHAR" property="sellerName" />
+    <result column="date" jdbcType="INTEGER" property="date" />
+    <result column="price" jdbcType="INTEGER" property="price" />
+    <result column="buyer_name" jdbcType="VARCHAR" property="buyerName" />
+    <result column="sale" jdbcType="INTEGER" property="sale" />
+    <result column="sell_date" jdbcType="INTEGER" property="sellDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, itemid, stack, seller, seller_name, `date`, price, buyer_name, sale, sell_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from tpzdb.auction_house
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from tpzdb.auction_house
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.haste.Pojo.AuctionHouse" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into tpzdb.auction_house (itemid, stack, seller, 
+      seller_name, `date`, price, 
+      buyer_name, sale, sell_date
+      )
+    values (#{itemid,jdbcType=SMALLINT}, #{stack,jdbcType=BOOLEAN}, #{seller,jdbcType=INTEGER}, 
+      #{sellerName,jdbcType=VARCHAR}, #{date,jdbcType=INTEGER}, #{price,jdbcType=INTEGER}, 
+      #{buyerName,jdbcType=VARCHAR}, #{sale,jdbcType=INTEGER}, #{sellDate,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.haste.Pojo.AuctionHouse" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into tpzdb.auction_house
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="itemid != null">
+        itemid,
+      </if>
+      <if test="stack != null">
+        stack,
+      </if>
+      <if test="seller != null">
+        seller,
+      </if>
+      <if test="sellerName != null">
+        seller_name,
+      </if>
+      <if test="date != null">
+        `date`,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="buyerName != null">
+        buyer_name,
+      </if>
+      <if test="sale != null">
+        sale,
+      </if>
+      <if test="sellDate != null">
+        sell_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="itemid != null">
+        #{itemid,jdbcType=SMALLINT},
+      </if>
+      <if test="stack != null">
+        #{stack,jdbcType=BOOLEAN},
+      </if>
+      <if test="seller != null">
+        #{seller,jdbcType=INTEGER},
+      </if>
+      <if test="sellerName != null">
+        #{sellerName,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=INTEGER},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=INTEGER},
+      </if>
+      <if test="buyerName != null">
+        #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="sale != null">
+        #{sale,jdbcType=INTEGER},
+      </if>
+      <if test="sellDate != null">
+        #{sellDate,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.haste.Pojo.AuctionHouse">
+    <!--@mbg.generated-->
+    update tpzdb.auction_house
+    <set>
+      <if test="itemid != null">
+        itemid = #{itemid,jdbcType=SMALLINT},
+      </if>
+      <if test="stack != null">
+        stack = #{stack,jdbcType=BOOLEAN},
+      </if>
+      <if test="seller != null">
+        seller = #{seller,jdbcType=INTEGER},
+      </if>
+      <if test="sellerName != null">
+        seller_name = #{sellerName,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        `date` = #{date,jdbcType=INTEGER},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=INTEGER},
+      </if>
+      <if test="buyerName != null">
+        buyer_name = #{buyerName,jdbcType=VARCHAR},
+      </if>
+      <if test="sale != null">
+        sale = #{sale,jdbcType=INTEGER},
+      </if>
+      <if test="sellDate != null">
+        sell_date = #{sellDate,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.haste.Pojo.AuctionHouse">
+    <!--@mbg.generated-->
+    update tpzdb.auction_house
+    set itemid = #{itemid,jdbcType=SMALLINT},
+      stack = #{stack,jdbcType=BOOLEAN},
+      seller = #{seller,jdbcType=INTEGER},
+      seller_name = #{sellerName,jdbcType=VARCHAR},
+      `date` = #{date,jdbcType=INTEGER},
+      price = #{price,jdbcType=INTEGER},
+      buyer_name = #{buyerName,jdbcType=VARCHAR},
+      sale = #{sale,jdbcType=INTEGER},
+      sell_date = #{sellDate,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

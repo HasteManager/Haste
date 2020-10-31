@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>ckplayer</title>
+		
+		<style type="text/css">body{margin:0;padding:0px;font-family:"Microsoft YaHei",YaHei,"微软雅黑",SimHei,"黑体";font-size:14px}</style>
+
+	</head>
+
+	<body>
+		<div id="video" style="width: 600px; height: 400px;"></div>
+		<script type="text/javascript" src="../ckplayer/ckplayer.js"></script>
+		<script type="text/javascript">
+			var videoObject = {
+				container: '#video', //容器的ID或className
+				variable: 'player',//播放函数名称
+				poster:'../material/poster.jpg',//封面图片
+				video: [//视频地址列表形式
+					['https://test20201019.oss-cn-hangzhou.aliyuncs.com/%E5%85%B3%E9%94%AE%E8%AF%8D.mp4', 'video/mp4', '周杰伦-七里香(高清)', 0],
+					/*['https://test20201019.oss-cn-hangzhou.aliyuncs.com/%E6%9E%97%E4%BF%8A%E6%9D%B0-%E4%B8%8D%E4%B8%BA%E8%B0%81%E8%80%8C%E4%BD%9C%E7%9A%84%E6%AD%8C(%E8%93%9D%E5%85%89).mp4', 'video/mp4', '林俊杰-不为谁而作的歌(蓝光).mp4', 0],
+					['https://test20201019.oss-cn-hangzhou.aliyuncs.com/%E6%9E%97%E4%BF%8A%E6%9D%B0-%E5%85%B3%E9%94%AE%E8%AF%8D%20(Horae%20Beaut%C3%A9%20%E9%9F%A9%E5%AA%9E%E5%BD%A2%E8%B1%A1%E4%B8%BB%E9%A2%98%E6%9B%B2)(%E8%93%9D%E5%85%89).mp4', 'video/mp4', '林俊杰-关键词 (Horae Beauté 韩媞形象主题曲)(蓝光).mp4', 0],
+					['https://govbuy-trade.oss-cn-hangzhou.aliyuncs.com/sam.mp4', 'video/mp4', '中文标清', 0]*/
+				]
+			};
+			var player = new ckplayer(videoObject);
+		</script>
+		<p>本页观看需要在支持h5环境的浏览器上，视频格式需要是h5支持的mp4</p>
+	</body>
+
+</html>
